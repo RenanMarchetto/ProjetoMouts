@@ -62,7 +62,7 @@ namespace DeveloperStore.Domain.Sales
             BranchId = branchId;
             BranchName = branchName;
 
-        }
+        }        
 
         public void CancelItem(Guid itemId)
         {
@@ -72,6 +72,8 @@ namespace DeveloperStore.Domain.Sales
 
             if(item is null)
                 throw new DomainException("Sale item not found.");
+
+            item.Cancel();
         }
 
         public void Cancel()
@@ -82,14 +84,18 @@ namespace DeveloperStore.Domain.Sales
             IsCancelled = true;
         }
 
-        private void AddItem(Guid productId, string productName, int quality, decimal unitPrice)
+        public void AddItem(Guid productId, string productName, int quantity, decimal unitPrice)
         {
             EnsureNotCancelled();
 
-            if(_items.Any(item => item.ProductId == productId && !item.IsCancelled))
+            if (_items.Any(item => item.ProductId == productId && !item.IsCancelled))
             {
                 throw new DomainException("Product already exists in the sale.");
             }
+
+            var item = new SaleItem(productId, productName, quantity, unitPrice);
+
+            _items.Add(item);
         }
 
         private void EnsureNotCancelled()
