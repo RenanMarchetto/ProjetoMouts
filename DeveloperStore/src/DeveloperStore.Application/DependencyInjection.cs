@@ -1,4 +1,5 @@
 ﻿using DeveloperStore.Application.Sales.Services;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DeveloperStore.Application
@@ -8,6 +9,7 @@ namespace DeveloperStore.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<ISaleService, SaleService>();
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
             return services;
         }
     }
