@@ -3,7 +3,7 @@ using DeveloperStore.Application.Sales.Requests;
 
 namespace DeveloperStore.Application.Sales.Services
 {
-    internal interface ISaleService
+    public interface ISaleService
     {
         Task<SaleDto> CreateAsync(CreateSaleRequest request, CancellationToken cancellationToken = default);
         Task<SaleDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
