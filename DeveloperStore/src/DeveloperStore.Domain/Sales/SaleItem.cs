@@ -59,6 +59,34 @@ namespace DeveloperStore.Domain.Sales
             TotalAmount = CalculateTotalAmount();
         }
 
+        internal void Update(string productName, int quantity, decimal unitPrice)
+        {
+            if (IsCancelled)
+            {
+                throw new DomainException("Cannot update a cancelled item.");
+            }
+            if (quantity <= 0)
+            {
+                throw new DomainException("Quantity must be greater than zero.");
+            }
+            if (quantity > 20)
+            {
+                throw new DomainException("It is not possible to sell more than 20 identical items.");
+            }
+            if (unitPrice <= 0)
+            {
+                throw new DomainException("Unit price must be greater than zero.");
+            }
+            if (string.IsNullOrWhiteSpace(productName))
+            {
+                throw new DomainException("Product name is required.");
+            }
+            Quantity = quantity;
+            UnitPrice = unitPrice;
+            Discount = CalculateDiscount(quantity);
+            TotalAmount = CalculateTotalAmount();
+        }
+
         public void Cancel()
         {
             if (IsCancelled)

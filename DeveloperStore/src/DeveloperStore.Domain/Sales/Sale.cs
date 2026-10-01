@@ -62,7 +62,43 @@ namespace DeveloperStore.Domain.Sales
             BranchId = branchId;
             BranchName = branchName;
 
-        }        
+        }
+        
+        public void Update(DateTime saleDate, Guid customerId, string customerName, Guid branchId, string branchName)
+        {
+            EnsureNotCancelled();
+            if (customerId == Guid.Empty)
+            {
+                throw new DomainException("Customer is required.");
+            }
+            if (string.IsNullOrWhiteSpace(customerName))
+            {
+                throw new DomainException("Customer name is required.");
+            }
+            if (branchId == Guid.Empty)
+            {
+                throw new DomainException("Branch is required.");
+            }
+            if (string.IsNullOrWhiteSpace(branchName))
+            {
+                throw new DomainException("Branch name is required.");
+            }
+
+            SaleDate = saleDate;
+            CustomerId = customerId;
+            CustomerName = customerName;
+            BranchId = branchId;
+            BranchName = branchName;
+        }
+
+        public void UpdateItem(Guid itemId, string productName, int quantity, decimal unitPrice)
+        {
+            EnsureNotCancelled();
+            var item = _items.FirstOrDefault(x => x.Id == itemId);
+            if (item is null)
+                throw new DomainException("Sale item not found.");
+            item.Update(productName, quantity, unitPrice);
+        }
 
         public void CancelItem(Guid itemId)
         {
