@@ -59,6 +59,34 @@ namespace DeveloperStore.Api.Controllers
             return Ok(sale);
         }
 
+        [HttpPatch("{id:guid}/cancel")]
+        [ProducesResponseType(typeof(SaleDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<SaleDto>> CancelAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var sale = await _saleService.CancelAsync(id, cancellationToken);
+            if (sale is null)
+            {
+                return NotFound();
+            }
+            return Ok(sale);
+        }
+
+        [HttpPatch("{saleId:guid}/items/{itemId:guid}/cancel")]
+        [ProducesResponseType(typeof(SaleDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<SaleDto>> CancelItemAsync(Guid saleId, Guid itemId, CancellationToken cancellationToken)
+        {
+            var sale = await _saleService.CancelItemAsync(saleId, itemId, cancellationToken);
+            if (sale is null)
+            {
+                return NotFound();
+            }
+            return Ok(sale);
+        }
+
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             await _saleService.DeleteAsync(id, cancellationToken);

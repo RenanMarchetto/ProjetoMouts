@@ -85,7 +85,7 @@ namespace DeveloperStore.Domain.Sales
         public void Cancel()
         {
             if (IsCancelled)
-                return;
+                throw new DomainException("Cannot cancel an already cancelled item.");
 
             IsCancelled = true;
         }

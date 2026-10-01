@@ -62,14 +62,12 @@ namespace DeveloperStore.Application.Sales.Services
                 sale.UpdateItem(item.ProductId, item.ProductName, item.Quantity, item.UnitPrice);
             }
 
-            _repository.Update(sale);
-
             await _repository.SaveChangesAsync(cancellationToken);
 
             return Map(sale);
         }
 
-        public async Task CancelAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<SaleDto> CancelAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var sale = _repository.GetByIdAsync(id, cancellationToken).Result;
 
@@ -80,12 +78,12 @@ namespace DeveloperStore.Application.Sales.Services
             
             sale.Cancel();
 
-            _repository.Update(sale);
-
             await _repository.SaveChangesAsync(cancellationToken);
+
+            return Map(sale);
         }
 
-        public async Task CancelItemAsync(Guid saleId, Guid itemId, CancellationToken cancellationToken = default)
+        public async Task<SaleDto> CancelItemAsync(Guid saleId, Guid itemId, CancellationToken cancellationToken = default)
         {
             var sale = _repository.GetByIdAsync(saleId, cancellationToken).Result;
 
@@ -96,9 +94,9 @@ namespace DeveloperStore.Application.Sales.Services
 
             sale.CancelItem(itemId);
 
-            _repository.Update(sale);
-
             await _repository.SaveChangesAsync(cancellationToken);
+
+            return Map(sale);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)

@@ -97,7 +97,8 @@ namespace DeveloperStore.Domain.Sales
 
         public void CancelItem(Guid itemId)
         {
-            EnsureNotCancelled();
+            if (IsCancelled)
+                throw new DomainException("Cannot cancel a item in an already cancelled sale.");
 
             var item = _items.FirstOrDefault(x => x.Id == itemId);
 
@@ -110,9 +111,17 @@ namespace DeveloperStore.Domain.Sales
         public void Cancel()
         {
             if (IsCancelled)
-                return;
+                throw new DomainException("Cannot cancel an already cancelled sale.");
 
             IsCancelled = true;
+
+            foreach (var item in _items)
+            {
+                if (!item.IsCancelled)
+                {
+                    item.Cancel();
+                }
+            }
         }
 
         public void AddItem(Guid productId, string productName, int quantity, decimal unitPrice)
