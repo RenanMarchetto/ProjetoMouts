@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DeveloperStore.Domain.Sales.Repositories
+﻿namespace DeveloperStore.Domain.Sales.Repositories
 {
     public interface ISaleRepository
     {

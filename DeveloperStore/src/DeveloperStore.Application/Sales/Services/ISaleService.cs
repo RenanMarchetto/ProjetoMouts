@@ -1,7 +1,6 @@
 ﻿using DeveloperStore.Application.Sales.DTOs;
 using DeveloperStore.Application.Sales.Requests;
 
-
 namespace DeveloperStore.Application.Sales.Services
 {
     internal interface ISaleService
