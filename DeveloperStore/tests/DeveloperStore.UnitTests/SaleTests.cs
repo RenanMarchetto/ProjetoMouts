@@ -1,5 +1,6 @@
 ﻿using DeveloperStore.Domain.Exceptions;
 using DeveloperStore.Domain.Sales;
+using DeveloperStore.Domain.Sales.Events;
 
 namespace DeveloperStore.UnitTests
 {
@@ -105,6 +106,39 @@ namespace DeveloperStore.UnitTests
             Assert.Equal("Renan Marchetto", sale.CustomerName);
             Assert.Equal(branchId, sale.BranchId);
             Assert.Equal("São Paulo", sale.BranchName);
+        }
+
+        [Fact]
+        public void Constructor_ShouldRaiseSaleCreatedEvent()
+        {
+            var sale = CreateSale();
+
+            Assert.Single(sale.DomainEvents, e => e is SaleCreatedEvent);
+        }
+
+        [Fact]
+        public void Constructor_ShouldRaiseSaleCancelledEvent()
+        {
+            var sale = CreateSale();
+
+            sale.ClearDomainEvents();
+            sale.Cancel();
+
+            Assert.Single(sale.DomainEvents, e => e is SaleCancelledEvent);
+        }
+
+        [Fact]
+        public void Constructor_ShouldRaiseItemCancelledEvent()
+        {
+            var sale = CreateSale();
+
+            sale.AddItem(Guid.NewGuid(), "Test Product", 1, 100m);
+
+            var item = sale.Items.First();
+            sale.ClearDomainEvents();
+            sale.CancelItem(item.Id);
+
+            Assert.Single(sale.DomainEvents, e => e is ItemCancelledEvent);
         }
     }
 }

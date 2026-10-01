@@ -1,4 +1,5 @@
-﻿using DeveloperStore.Application.Common.Exceptions;
+﻿using DeveloperStore.Application.Common.Events;
+using DeveloperStore.Application.Common.Exceptions;
 using DeveloperStore.Application.Sales.DTOs;
 using DeveloperStore.Application.Sales.Requests;
 using DeveloperStore.Domain.Exceptions;
@@ -11,10 +12,12 @@ namespace DeveloperStore.Application.Sales.Services
     public class SaleService : ISaleService
     {
         private readonly ISaleRepository _repository;
+        private readonly IDomainEventDispatcher _eventDispatcher;
 
-        public SaleService(ISaleRepository repository)
+        public SaleService(ISaleRepository repository, IDomainEventDispatcher eventDispatcher)
         {
             _repository = repository;
+            _eventDispatcher = eventDispatcher;
         }
 
         public async Task<SaleDto> CreateAsync(CreateSaleRequest request, CancellationToken cancellationToken = default)
@@ -43,6 +46,8 @@ namespace DeveloperStore.Application.Sales.Services
 
             await _repository.SaveChangesAsync(cancellationToken);
 
+            await DispatchDomainEventsAsync(sale, cancellationToken);
+
             return Map(sale);
         }
 
@@ -64,6 +69,8 @@ namespace DeveloperStore.Application.Sales.Services
 
             await _repository.SaveChangesAsync(cancellationToken);
 
+            await DispatchDomainEventsAsync(sale, cancellationToken);
+
             return Map(sale);
         }
 
@@ -80,6 +87,8 @@ namespace DeveloperStore.Application.Sales.Services
 
             await _repository.SaveChangesAsync(cancellationToken);
 
+            await DispatchDomainEventsAsync(sale, cancellationToken);
+
             return Map(sale);
         }
 
@@ -95,6 +104,8 @@ namespace DeveloperStore.Application.Sales.Services
             sale.CancelItem(itemId);
 
             await _repository.SaveChangesAsync(cancellationToken);
+
+            await DispatchDomainEventsAsync(sale, cancellationToken);
 
             return Map(sale);
         }
@@ -125,7 +136,14 @@ namespace DeveloperStore.Application.Sales.Services
             var sales = await _repository.GetAllAsync(cancellationToken);
 
             return sales.Select(Map).ToList();
-        } 
+        }
+        
+        private async Task DispatchDomainEventsAsync(Sale sale, CancellationToken cancellationToken)
+        {
+            await _eventDispatcher.DispatchAsync(sale.DomainEvents, cancellationToken);
+
+            sale.ClearDomainEvents();
+        }
 
         private static SaleDto Map(Sale sale)
         {

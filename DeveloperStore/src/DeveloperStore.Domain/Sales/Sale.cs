@@ -1,11 +1,14 @@
 ﻿using DeveloperStore.Domain.Common;
 using DeveloperStore.Domain.Exceptions;
+using DeveloperStore.Domain.Sales.Events;
 
 namespace DeveloperStore.Domain.Sales
 {
     public class Sale : Entity
     {
         private readonly List<SaleItem> _items = [];
+        private readonly List<IDomainEvent> _domainEvents = [];
+        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         public string SaleNumber { get; private set; }
         public DateTime SaleDate { get; private set; }
@@ -57,6 +60,7 @@ namespace DeveloperStore.Domain.Sales
             BranchId = branchId;
             BranchName = branchName;
 
+            _domainEvents.Add(new SaleCreatedEvent(Id, SaleNumber, DateTime.UtcNow));
         }
         
         public void Update(DateTime saleDate, Guid customerId, string customerName, Guid branchId, string branchName)
@@ -84,6 +88,8 @@ namespace DeveloperStore.Domain.Sales
             CustomerName = customerName;
             BranchId = branchId;
             BranchName = branchName;
+
+            _domainEvents.Add(new SaleModifiedEvent(Id, DateTime.UtcNow));
         }
 
         public void UpdateItem(Guid itemId, string productName, int quantity, decimal unitPrice)
@@ -106,6 +112,8 @@ namespace DeveloperStore.Domain.Sales
                 throw new DomainException("Sale item not found.");
 
             item.Cancel();
+
+            _domainEvents.Add(new ItemCancelledEvent(Id, item.Id, DateTime.UtcNow));
         }
 
         public void Cancel()
@@ -122,6 +130,8 @@ namespace DeveloperStore.Domain.Sales
                     item.Cancel();
                 }
             }
+
+            _domainEvents.Add(new SaleCancelledEvent(Id, DateTime.UtcNow));
         }
 
         public void AddItem(Guid productId, string productName, int quantity, decimal unitPrice)
@@ -136,6 +146,11 @@ namespace DeveloperStore.Domain.Sales
             var item = new SaleItem(productId, productName, quantity, unitPrice);
 
             _items.Add(item);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents.Clear();
         }
 
         private void EnsureNotCancelled()
