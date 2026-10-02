@@ -28,17 +28,22 @@ The API supports the complete lifecycle of a sale, including creation, retrieval
 The solution is divided into the following projects:
 
 text
-DeveloperStore/
+.
 ├── src/
 │   ├── DeveloperStore.Api/
 │   ├── DeveloperStore.Application/
 │   ├── DeveloperStore.Domain/
 │   └── DeveloperStore.Infrastructure/
 │
-└── tests/
-    ├── DeveloperStore.UnitTests/
-    └── DeveloperStore.IntegrationTests/
-
+├── tests/
+│  ├── DeveloperStore.UnitTests/
+│  └── DeveloperStore.IntegrationTests/
+├── DeveloperStore.slnx
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
+├── .gitignore
+└── README.md
 
 ### DeveloperStore.Domain
 

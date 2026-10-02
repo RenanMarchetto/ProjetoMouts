@@ -10,7 +10,7 @@ namespace DeveloperStore.Domain.Sales
         private readonly List<IDomainEvent> _domainEvents = [];
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-        public string SaleNumber { get; private set; }
+        public string SaleNumber { get; private set; } = string.Empty;
         public DateTime SaleDate { get; private set; }
         public Guid CustomerId { get; private set; }
         public string CustomerName { get; private set; } = string.Empty;
