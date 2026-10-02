@@ -1,7 +1,9 @@
 using DeveloperStore.Api.Middleware;
 using DeveloperStore.Application;
 using DeveloperStore.Infrastructure;
+using DeveloperStore.Infrastructure.Persistence;
 using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,12 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+if(!app.Environment.IsEnvironment("IntegrationTests"))
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<DeveloperStoreDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.

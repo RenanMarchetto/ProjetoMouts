@@ -87,6 +87,9 @@ namespace DeveloperStore.Api.Controllers
             return Ok(sale);
         }
 
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             await _saleService.DeleteAsync(id, cancellationToken);
