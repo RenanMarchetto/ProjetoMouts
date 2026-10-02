@@ -44,6 +44,7 @@ namespace DeveloperStore.Application.Sales.Services
                 sale.AddItem(item.ProductId, item.ProductName, item.Quantity, item.UnitPrice);
             }
 
+            await _repository.AddAsync(sale, cancellationToken);
             await _repository.SaveChangesAsync(cancellationToken);
 
             await DispatchDomainEventsAsync(sale, cancellationToken);

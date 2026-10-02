@@ -52,7 +52,6 @@ namespace DeveloperStore.Api.Middleware
             };
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-            throw new NotImplementedException();
         }
     }
 }

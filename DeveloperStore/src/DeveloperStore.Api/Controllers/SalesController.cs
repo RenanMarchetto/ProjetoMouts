@@ -22,10 +22,10 @@ namespace DeveloperStore.Api.Controllers
         public async Task<ActionResult<SaleDto>> CreateAsync([FromBody] CreateSaleRequest request, CancellationToken cancellationToken)
         {
             var sale = await _saleService.CreateAsync(request, cancellationToken);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = sale.Id }, sale);
+            return Created($"/api/sales/{sale.Id}", sale);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:guid}", Name = "GetSaleById")]
         [ProducesResponseType(typeof(SaleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<SaleDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken)

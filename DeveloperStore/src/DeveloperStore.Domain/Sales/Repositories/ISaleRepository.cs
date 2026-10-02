@@ -5,7 +5,7 @@
         Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Sale?> GetBySaleNumberAsync(string saleNumber, CancellationToken cancellationToken = default);
         Task<IReadOnlyCollection<Sale>> GetAllAsync(CancellationToken cancellationToken = default);
-
+        Task AddAsync(Sale sale, CancellationToken cancellationToken = default);
         void Update(Sale sale);
         void Delete(Sale sale);
 
